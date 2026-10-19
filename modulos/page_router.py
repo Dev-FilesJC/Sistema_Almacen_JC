@@ -11,6 +11,7 @@ PAGINAS = {
     'CHECK FILEWEB AND LASERFICHE': 'check_fileweb_laserfiche',
     'SINTAXIS LASERFICHE-ONEIL': 'sintaxis_laserfiche_oneil',
     'DUPLICAR FILAS': 'duplicar_filas',
+    'SEPARADOR ITEMS ONEIL': 'separador_items_oneil',
     'JUEGA CON DINO': 'juega_con_dino',
 }
 
