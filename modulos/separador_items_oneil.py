@@ -254,6 +254,11 @@ else:
                                                 valor_estado = str(rr[col_estado]).strip()
                                                 if k and valor_estado:
                                                     estados_por_solicitud[k] = valor_estado
+                                        # El archivo de estado puede identificar la OT con un Nombre tipo
+                                        # OTRE-..., mientras que LASER-BNB usa en Nombre un código SR2-...
+                                        # que aparece en la columna Nro Solicitud del archivo de estado.
+                                        # Por eso, primero intentamos el Nombre literal y luego usamos
+                                        # Nro Solicitud del estado como clave alternativa para el Nombre LASER.
                                         if status_nombre:
                                             for _, rr in df_status.iterrows():
                                                 k = normalizar_codigo(rr[status_nombre])
@@ -264,7 +269,10 @@ else:
                                         for ix, rr in comp.iterrows():
                                             sol = normalizar_codigo(rr.get("Nro de Solicitud", ""))
                                             nom = normalizar_codigo(rr.get(nombre_laser, "")) if nombre_laser else ""
-                                            comp.at[ix, "Estado OT por Nombre"] = estados_por_nombre.get(nom, "")
+                                            estado_nombre = estados_por_nombre.get(nom, "")
+                                            if not estado_nombre and nom:
+                                                estado_nombre = estados_por_solicitud.get(nom, "")
+                                            comp.at[ix, "Estado OT por Nombre"] = estado_nombre
                                             comp.at[ix, "Estado OT por Nro de Solicitud"] = estados_por_solicitud.get(sol, "")
                                     # Mantener ambas columnas de estado y el indicador de comparación.
                                     preferidas = [c for c in [nombre_resultado, items_resultado, fecha_resultado, "Estado OT por Nombre", "Nro de Solicitud", "Codigo del Item", "Fecha de Solicitud", "Estado OT por Nro de Solicitud", "Estado comparación"] if c in comp.columns]
