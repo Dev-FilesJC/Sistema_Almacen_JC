@@ -242,25 +242,32 @@ else:
                                             candidato = original + " - Documento prestado"
                                         if candidato in comp.columns and canonico not in comp.columns:
                                             comp.rename(columns={candidato: canonico}, inplace=True)
-                                    # Añade Estado de OT buscando primero por Nro Solicitud y luego por Nombre.
-                                    comp["Estado de OT"] = ""
+                                    # Estado de OT independiente para Nombre (LASER) y Nro de Solicitud (préstamos).
+                                    comp["Estado OT por Nombre"] = ""
+                                    comp["Estado OT por Nro de Solicitud"] = ""
                                     if df_status is not None and col_estado:
-                                        estado_map = {}
+                                        estados_por_nombre = {}
+                                        estados_por_solicitud = {}
                                         if status_solicitud:
                                             for _, rr in df_status.iterrows():
                                                 k = normalizar_codigo(rr[status_solicitud])
-                                                if k and str(rr[col_estado]).strip(): estado_map[("SOL", k)] = str(rr[col_estado]).strip()
-                                        nombre_laser = buscar_columna(comp, ["Nombre"])
+                                                valor_estado = str(rr[col_estado]).strip()
+                                                if k and valor_estado:
+                                                    estados_por_solicitud[k] = valor_estado
                                         if status_nombre:
                                             for _, rr in df_status.iterrows():
                                                 k = normalizar_codigo(rr[status_nombre])
-                                                if k and str(rr[col_estado]).strip(): estado_map[("NOM", k)] = str(rr[col_estado]).strip()
+                                                valor_estado = str(rr[col_estado]).strip()
+                                                if k and valor_estado:
+                                                    estados_por_nombre[k] = valor_estado
+                                        nombre_laser = buscar_columna(comp, [nombre_resultado, "Nombre"])
                                         for ix, rr in comp.iterrows():
                                             sol = normalizar_codigo(rr.get("Nro de Solicitud", ""))
                                             nom = normalizar_codigo(rr.get(nombre_laser, "")) if nombre_laser else ""
-                                            comp.at[ix, "Estado de OT"] = estado_map.get(("SOL", sol), estado_map.get(("NOM", nom), ""))
-                                    # Orden de columnas prácticas: datos LASER, datos del préstamo, comparación y estado OT.
-                                    preferidas = [c for c in [nombre_resultado, fecha_resultado, items_resultado, "Codigo del Item", "Nro de Solicitud", "Fecha de Solicitud", "Estado de OT", "Estado comparación"] if c in comp.columns]
+                                            comp.at[ix, "Estado OT por Nombre"] = estados_por_nombre.get(nom, "")
+                                            comp.at[ix, "Estado OT por Nro de Solicitud"] = estados_por_solicitud.get(sol, "")
+                                    # Mantener ambas columnas de estado y el indicador de comparación.
+                                    preferidas = [c for c in [nombre_resultado, fecha_resultado, items_resultado, "Codigo del Item", "Nro de Solicitud", "Fecha de Solicitud", "Estado OT por Nombre", "Estado OT por Nro de Solicitud", "Estado comparación"] if c in comp.columns]
                                     resto = [c for c in comp.columns if c not in preferidas]
                                     comp = comp[preferidas + resto]
                                     st.session_state["resultado_comparacion"] = comp
@@ -283,11 +290,27 @@ else:
                                             return ["background-color: #fff2cc; color: #7f0000; font-weight: bold"] * len(fila)
                                         return [""] * len(fila)
                                     st.dataframe(mostrar.style.apply(resaltar_fila, axis=1), use_container_width=True, hide_index=True)
-                                    d1, d2 = st.columns(2)
+                                    # Descarga compacta con exactamente las columnas solicitadas.
+                                    columnas_descarga = [
+                                        nombre_resultado, fecha_resultado, items_resultado,
+                                        "Codigo del Item", "Nro de Solicitud", "Fecha de Solicitud",
+                                        "Estado OT por Nombre", "Estado OT por Nro de Solicitud"
+                                    ]
+                                    columnas_descarga = list(dict.fromkeys(c for c in columnas_descarga if c in comp.columns))
+                                    descarga_seleccionada = comp[columnas_descarga].copy()
+                                    descarga_seleccionada.rename(columns={
+                                        nombre_resultado: "Nombre",
+                                        fecha_resultado: "Fecha de creación",
+                                        items_resultado: "Items Oneil",
+                                    }, inplace=True)
+                                    d1, d2, d3 = st.columns(3)
                                     with d1:
+                                        st.download_button("📥 Descargar columnas solicitadas", data=crear_excel(descarga_seleccionada, "Resultado solicitado"),
+                                            file_name="COMPARACION_ITEMS_COLUMNAS_SOLICITADAS.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="descargar_columnas_solicitadas")
+                                    with d2:
                                         st.download_button("📥 Descargar comparación completa", data=crear_excel(comp, "Comparacion", "Estado comparación"),
                                             file_name="COMPARACION_ITEMS_ONEIL_COMPLETA.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="descargar_comparacion_items")
-                                    with d2:
+                                    with d3:
                                         solo_dup = comp[comp["Estado comparación"] == "DUPLICADO"].copy()
                                         st.download_button("📥 Descargar solo duplicados", data=crear_excel(solo_dup, "Duplicados", "Estado comparación"),
                                             file_name="DUPLICADOS_ITEMS_ONEIL.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key="descargar_solo_duplicados")
