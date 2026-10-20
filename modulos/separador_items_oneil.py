@@ -267,7 +267,7 @@ else:
                                             comp.at[ix, "Estado OT por Nombre"] = estados_por_nombre.get(nom, "")
                                             comp.at[ix, "Estado OT por Nro de Solicitud"] = estados_por_solicitud.get(sol, "")
                                     # Mantener ambas columnas de estado y el indicador de comparación.
-                                    preferidas = [c for c in [nombre_resultado, fecha_resultado, items_resultado, "Codigo del Item", "Nro de Solicitud", "Fecha de Solicitud", "Estado OT por Nombre", "Estado OT por Nro de Solicitud", "Estado comparación"] if c in comp.columns]
+                                    preferidas = [c for c in [nombre_resultado, items_resultado, fecha_resultado, "Estado OT por Nombre", "Nro de Solicitud", "Codigo del Item", "Fecha de Solicitud", "Estado OT por Nro de Solicitud", "Estado comparación"] if c in comp.columns]
                                     resto = [c for c in comp.columns if c not in preferidas]
                                     comp = comp[preferidas + resto]
                                     st.session_state["resultado_comparacion"] = comp
@@ -292,9 +292,9 @@ else:
                                     st.dataframe(mostrar.style.apply(resaltar_fila, axis=1), use_container_width=True, hide_index=True)
                                     # Descarga compacta con exactamente las columnas solicitadas.
                                     columnas_descarga = [
-                                        nombre_resultado, fecha_resultado, items_resultado,
-                                        "Codigo del Item", "Nro de Solicitud", "Fecha de Solicitud",
-                                        "Estado OT por Nombre", "Estado OT por Nro de Solicitud"
+                                        nombre_resultado, items_resultado, fecha_resultado,
+                                        "Estado OT por Nombre", "Nro de Solicitud", "Codigo del Item",
+                                        "Fecha de Solicitud", "Estado OT por Nro de Solicitud"
                                     ]
                                     columnas_descarga = list(dict.fromkeys(c for c in columnas_descarga if c in comp.columns))
                                     descarga_seleccionada = comp[columnas_descarga].copy()
