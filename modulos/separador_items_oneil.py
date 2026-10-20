@@ -64,6 +64,20 @@ def leer_excel(upload):
     upload.seek(0)
     frame = pd.read_excel(upload, dtype=str, keep_default_na=False)
     frame.columns = [str(col).strip() for col in frame.columns]
+
+    # Mostrar las columnas de fecha en formato día/mes/año y hora.
+    # Se aplica al leer los archivos para que el formato se conserve
+    # tanto en las tablas de Streamlit como en los Excel descargados.
+    for columna in frame.columns:
+        nombre = normalizar_columna(columna)
+        if "fecha" in nombre or nombre in {"date", "datetime", "created at"}:
+            original = frame[columna].astype(str).str.strip()
+            convertida = pd.to_datetime(original, errors="coerce")
+            validas = convertida.notna()
+            if validas.any():
+                valores_formateados = convertida.dt.strftime("%d/%m/%Y %H:%M:%S")
+                frame.loc[validas, columna] = valores_formateados.loc[validas]
+
     return frame
 
 
