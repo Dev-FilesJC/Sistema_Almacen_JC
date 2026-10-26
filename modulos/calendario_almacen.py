@@ -14,7 +14,7 @@ if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, engine='openpyxl')
 
         # Elimoinar Columnas
-    Eliminar = df.drop(['ELIMINAR_1', 'ELIMINAR_2', 'ELIMINAR_3', 'ELIMINAR_4', 'ELIMINAR_5','ELIMINAR_6','ELIMINAR_7','ELIMINAR_8','ELIMINAR_9','ELIMINAR_10','ELIMINAR_11','ELIMINAR_12','ELIMINAR_13'], axis=1)
+    Eliminar = df.drop(['ELIMINAR_1', 'ELIMINAR_2', 'ELIMINAR_3', 'ELIMINAR_4', 'ELIMINAR_5','ELIMINAR_6','ELIMINAR_7','ELIMINAR_8','ELIMINAR_9','ELIMINAR_10','ELIMINAR_11','ELIMINAR_12','ELIMINAR_13'], axis=1, errors='ignore')
     Separar = Eliminar["LOCACION"].str.split('[.-]', expand=True)
     Separar.columns = ['GALPON','LA','PASILLO','SHELF','NIVEL','COLUMNA']
     Eliminar = pd.concat([Separar, Eliminar], axis=1)
