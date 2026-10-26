@@ -89,7 +89,7 @@ if uploaded_file is not None:
 
         #---*******************************************************---
 
-        Calendario = Calendario.style.applymap(highlight_integers)
+        Calendario = Calendario.style.map(highlight_integers)
             
         st.write(Calendario)
             
@@ -311,7 +311,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -449,7 +449,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -590,7 +590,7 @@ if uploaded_file is not None:
             #---*******************************************************---
 
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -727,7 +727,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -865,7 +865,7 @@ if uploaded_file is not None:
             #---*******************************************************---
 
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -1002,7 +1002,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -1140,7 +1140,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -1279,7 +1279,7 @@ if uploaded_file is not None:
             #---*******************************************************---
 
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -1416,7 +1416,7 @@ if uploaded_file is not None:
 
             #---*******************************************************---
 
-            Calendario = Calendario.style.applymap(highlight_integers)
+            Calendario = Calendario.style.map(highlight_integers)
 
             st.write(Calendario)
 
@@ -1565,7 +1565,7 @@ if uploaded_file is not None:
 
         #---*******************************************************---
 
-        Calendario = Calendario.style.applymap(highlight_integers)
+        Calendario = Calendario.style.map(highlight_integers)
 
         st.write(Calendario)
 
