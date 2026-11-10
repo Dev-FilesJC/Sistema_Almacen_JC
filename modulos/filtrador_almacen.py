@@ -259,9 +259,9 @@ elif seleccion == "FILTRADO FILES":
             st.write('FILTRADO POR LOCACIONES:')
 
             # Permitir al usuario ingresar el nombre del archivo
-            file_name = st.selectbox("Guardar Como:", options = ["OPCIONES", "L-DEV-CJ-001"])
+            file_name = st.selectbox("Guardar Como:", options = ["OPCIONES", "L-DEV-CJ-001", "L-DIG-CJ-001", "L-INV-CJ-001"])
             # Filtrado por Locacion
-            Loc = st.selectbox("Buscar Locacion", options = ["LOCACION", "DEV"])
+            Loc = st.selectbox("Buscar Locacion", options = ["LOCACION", "DEV", "DIG", "INV"])
 
             if file_name == " " and Loc == " ":
                 pass
@@ -295,6 +295,38 @@ elif seleccion == "FILTRADO FILES":
                             file_name=f"{file_name}.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
+            
+            if Loc == "DIG":
+                Ordenar = Eliminar[(Eliminar['LA'] == Loc)]
+                st.dataframe(Ordenar)
+
+                if file_name == "L-DIG-CJ-001" and Loc == "DIG":
+
+                    # Limpiar el nombre del archivo para evitar caracteres problemáticos
+                    file_name = file_name.replace(" ", "_").replace(":", "-").replace("/", "-")
+
+                    save_dir = Path(ruta)
+                        
+                    # Guardar el DataFrame en un archivo Excel físico
+                    file_path =  save_dir / f"{file_name}.xlsx"
+
+                    # Guardar el dataFrame en el archivo Excel
+                    with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+                        Ordenar.to_excel(writer, index=False) # Guardar el primer dataFrame 
+
+                    # Informar al usuario donde se guardo ek archivo
+                    st.write(f"Archivo Guardo en: {file_path.resolve()} ")
+
+                    # Mostrar el boton de descarga para descargar el archivo guardado
+                    with open(file_path, "rb") as file:
+                        st.download_button(
+                            label="Descargar Excel",
+                            data=file,
+                            file_name=f"{file_name}.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+
+      
 
         else:
             st.write("Por favor, suba un archivo de Excel para visualizarlo.")
